@@ -3,10 +3,6 @@ package com.example.admin.applicationmorpion;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by admin on 27/05/2018.
- */
-
 public class SessionManager {
 
     private SharedPreferences prefs;

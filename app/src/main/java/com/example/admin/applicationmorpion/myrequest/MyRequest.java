@@ -23,11 +23,11 @@ import java.util.Map;
 
 public class MyRequest {
 
-    private Context conext;
+    private Context context;
     private RequestQueue queue;
 
-    public MyRequest(Context conext, RequestQueue queue) {
-        this.conext = conext;
+    public MyRequest(Context context, RequestQueue queue) {
+        this.context = context;
         this.queue = queue;
     }
 
