@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.example.admin.applicationmorpion.myrequest.MyRequest;
@@ -63,18 +65,12 @@ public class Menu1Activity extends AppCompatActivity {
             @Override
             public void onSucces(JSONObject json) {
                 try{
-                    if(json.length() != 0){
-                        for(Iterator iterator = json.keys(); iterator.hasNext();){
-                            Object cle = iterator.next();
-                            Object val = json.get(String.valueOf(cle));
-                            /*id_couleur.add(cle);*/
-                            j_ok.add(val);
-                            sp_j_ok.setAdapter(adapterJok);
-                        }
-                    } else {
-                        sp_j_ok.setVisibility(View.GONE);
+                    for(Iterator iterator = json.keys(); iterator.hasNext();) {
+                        Object cle = iterator.next();
+                        Object val = json.get(String.valueOf(cle));
+                        j_ok.add(val);
+                        sp_j_ok.setAdapter(adapterJok);
                     }
-
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
