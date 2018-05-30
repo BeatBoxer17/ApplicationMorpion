@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context="com.example.admin.applicationmorpion.Menu1Activity">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        android:id="@+id/tv_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/tv_deja_a"
+        android:text="@string/deja_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:layout_marginTop="10dp"
+        android:id="@+id/sp_j_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_marginTop="10dp"
+        android:id="@+id/btn_go_duel"
+        android:text="@string/c_est_partie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/tv_pas_deja_a"
+        android:text="@string/pas_deja_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:layout_marginTop="10dp"
+        android:id="@+id/sp_j_nok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_marginTop="10dp"
+        android:id="@+id/btn_go_duel_n"
+        android:text="@string/c_est_partie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/logout" />
+
+</LinearLayout>
