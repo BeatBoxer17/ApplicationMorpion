@@ -27,26 +27,24 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    // Définition des variable
     private Button btn_send;
     private TextInputLayout til_nom, til_prenom, til_pseudo, til_email, til_password, til_password2;
     private ProgressBar pb_loader;
+    private Spinner sp_couleur;
     private RequestQueue queue;
     private MyRequest request;
-    private Spinner sp_couleur;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        final List couleur = new ArrayList();
-        final ArrayAdapter adapterCouleur = new ArrayAdapter(this, android.R.layout.simple_spinner_item, couleur);
+        queue = VolleySingleton.getInstance(this).getRequestQueue();
+        request = new MyRequest(this, queue);
 
-        /*final List id_couleur = new ArrayList();
-        final ArrayAdapter adapterIdCouleur = new ArrayAdapter(this, android.R.layout.simple_spinner_item, id_couleur);*/
-
-        adapterCouleur.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
+        // Récuperaion des élément des
         sp_couleur = (Spinner) findViewById(R.id.spinner_couleur);
         btn_send = (Button) findViewById(R.id.btn_send);
         pb_loader = (ProgressBar) findViewById(R.id.pb_loader);
@@ -57,17 +55,26 @@ public class RegisterActivity extends AppCompatActivity {
         til_nom = (TextInputLayout) findViewById(R.id.til_nom);
         til_prenom = (TextInputLayout) findViewById(R.id.til_prenom);
 
-        queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
+        // ArrayList des libelle de couleur
+        final List couleur = new ArrayList();
+        // On ajouter cette ArrayList à un adapter
+        final ArrayAdapter adapterCouleur = new ArrayAdapter(this, android.R.layout.simple_spinner_item, couleur);
+        adapterCouleur.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        // ArrayList des id de couleur
+        final List id_couleur = new ArrayList();
+
+        // Appel de la requête getCouleur
         request.getCouleur(new MyRequest.getCouleurCallBack() {
             @Override
+            // Si la requête reussi
             public void onSucces(JSONObject json) {
                 try{
+                    // On parcours l'objet retourner afin d'ajouter les libelle et les id des couleur à leur A
                     for(Iterator iterator = json.keys(); iterator.hasNext();){
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
-                        /*id_couleur.add(cle);*/
+                        id_couleur.add(cle);
                         couleur.add(val);
                         sp_couleur.setAdapter(adapterCouleur);
                     }
@@ -82,22 +89,36 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Au clicl sur le bouton d'inscription
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // On rend la progress bar visible
                 pb_loader.setVisibility(View.VISIBLE);
+
+                // Récuperation des données rentrer
                 String pseudo = til_pseudo.getEditText().getText().toString().trim();
                 String email = til_email.getEditText().getText().toString().trim();
                 String password = til_password.getEditText().getText().toString().trim();
                 String password2 = til_password2.getEditText().getText().toString().trim();
                 String nom = til_nom.getEditText().getText().toString().trim();
                 String prenom = til_prenom.getEditText().getText().toString().trim();
+                // Récuperation de la position du spinner
+                Integer id_couleur_fin = sp_couleur.getSelectedItemPosition();
+                // Récuperation de l'id de la couleur en fonction de la position dans le spinner
+                Object id_couleur_fin2 = id_couleur.get(id_couleur_fin);
 
-                if(pseudo.length() > 0 && email.length() > 0 && password.length() > 0 && password2.length() > 0 && nom.length() > 0 && prenom.length() > 0) {
-                    request.register(nom, prenom, pseudo, email, password, password2, new MyRequest.RegisterCallBack() {
+                // Si les champs ne sont pas vide
+                if(pseudo.length() > 0 && email.length() > 0 && password.length() > 0 && password2.length() > 0 && nom.length() > 0 && prenom.length() > 0 && !id_couleur_fin2.toString().isEmpty()) {
+                    // Requetes pour inscrire un joueur
+                    request.register(nom, prenom, pseudo, email, password, password2, id_couleur_fin2.toString(), new MyRequest.RegisterCallBack() {
                         @Override
+                        // Si elle reussi
                         public void onSucces(String message) {
+                            // On cache la progress bar
                             pb_loader.setVisibility(View.GONE);
+                            // Et on redirige vers l'activité Login
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             intent.putExtra("REGISTER", message);
                             startActivity(intent);
@@ -141,6 +162,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                 } else {
+                    pb_loader.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
                 }
             }

@@ -31,7 +31,7 @@ public class MyRequest {
         this.queue = queue;
     }
 
-    public void register(final String nom, final String prenom, final String pseudo, final String email, final String password, final String password2, /*final Integer id_couleur_fin,*/ final RegisterCallBack callBack){
+    public void register(final String nom, final String prenom, final String pseudo, final String email, final String password, final String password2, final String id_couleur_fin, final RegisterCallBack callBack){
 
         String url = "http://app-morpion.000webhostapp.com/register/register.php";
 
@@ -64,9 +64,6 @@ public class MyRequest {
                         if(message.has("prenom")){
                             errors.put("prenom", message.getString("prenom"));
                         }
-                        /*if(message.has("id_couleur_fin")){
-                            errors.put("id_couleur_fin", message.getString("id_couleur_fin"));
-                        }*/
                         callBack.inputErrors(errors);
 
 
@@ -98,7 +95,7 @@ public class MyRequest {
                 map.put("email", email);
                 map.put("password", password);
                 map.put("password2", password2);
-                /*map.put("id_couleur_fin", String.valueOf(id_couleur_fin));*/
+                map.put("id_couleur", id_couleur_fin);
 
                 return map;
             }
