@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         queue = VolleySingleton.getInstance(this).getRequestQueue();
         request = new MyRequest(this, queue);
 
-        // Récuperaion des élément des
+        // Récuperaion des élément du XML
         sp_couleur = (Spinner) findViewById(R.id.spinner_couleur);
         btn_send = (Button) findViewById(R.id.btn_send);
         pb_loader = (ProgressBar) findViewById(R.id.pb_loader);
@@ -126,8 +126,12 @@ public class RegisterActivity extends AppCompatActivity {
                         }
 
                         @Override
+                        // Si il ya des erreurs d'entrée
                         public void inputErrors(Map<String, String> errors) {
+                            // On cache la progress bar
                             pb_loader.setVisibility(View.GONE);
+
+                            // Et grace a la librairi desgin on peut mettre les erreur recuperer directement en dessous du inputtext
                             if(errors.get("pseudo") != null){
                                 til_pseudo.setError(errors.get("pseudo"));
                             } else {
@@ -156,12 +160,13 @@ public class RegisterActivity extends AppCompatActivity {
                         }
 
                         @Override
+                        // S'il y a des erreurs de connection ou de la librairie volley
                         public void onError(String message) {
                             pb_loader.setVisibility(View.GONE);
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
-                } else {
+                } else { // Si des champs ne sont pas remplit
                     pb_loader.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
                 }
