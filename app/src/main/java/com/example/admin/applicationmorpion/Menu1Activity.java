@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class Menu1Activity extends AppCompatActivity {
 
@@ -131,19 +132,36 @@ public class Menu1Activity extends AppCompatActivity {
             }
         });
 
-        btn_duel.setOnClickListener(new View.OnClickListener() {
+        btn_nduel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!j_ok.isEmpty()){
                     // Récuperation de la position du spinner
                     Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
                     // Récuperation de l'id de la couleur en fonction de la position dans le spinner
-                    Object id_j_nok_fin2 = id_j_nok.get(id_j_nok_fin);
+                    final Object id_j_nok_fin2 = id_j_nok.get(id_j_nok_fin);
 
-                    Intent intent = new Intent();
-                    intent.putExtra("id_joueur2", id_j_nok_fin2.toString());
-                    startActivity(intent);
-                    finish();
+                    request.createDuel(sessionManager.getId(), String.valueOf(id_j_nok_fin2), new MyRequest.createDuelCallBack() {
+                        @Override
+                        public void onSucces(String message) {
+                            Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
+                            intent.putExtra("id_joueur2", id_j_nok_fin2.toString());
+                            intent.putExtra("create", message);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void inputErrors(Map<String, String> errors) {
+
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Pas de joueur non affrontés", Toast.LENGTH_SHORT).show();
                 }
