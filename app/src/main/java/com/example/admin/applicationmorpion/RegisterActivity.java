@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
             // Si la requête reussi
             public void onSucces(JSONObject json) {
                 try{
-                    // On parcours l'objet retourner afin d'ajouter les libelle et les id des couleur à leur A
+                    // On parcours l'objet retourner afin d'ajouter les libelle et les id des couleur à leur ArrayList
                     for(Iterator iterator = json.keys(); iterator.hasNext();){
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));

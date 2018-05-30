@@ -38,11 +38,10 @@ public class Menu1Activity extends AppCompatActivity {
 
         final List j_ok = new ArrayList();
         final ArrayAdapter adapterJok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_ok);
+        adapterJok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         final List j_nok = new ArrayList();
         final ArrayAdapter adapterJnok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_nok);
-
-        adapterJok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapterJnok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         textView = (TextView) findViewById(R.id.tv_pseudo);
