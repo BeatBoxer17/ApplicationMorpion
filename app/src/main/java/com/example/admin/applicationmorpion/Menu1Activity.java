@@ -26,7 +26,7 @@ public class Menu1Activity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private TextView textView;
-    private Button btn_logout;
+    private Button btn_logout, btn_duel, btn_nduel;
     private RequestQueue queue;
     private MyRequest request;
     private AppCompatSpinner sp_j_ok, sp_j_nok;
@@ -36,29 +36,37 @@ public class Menu1Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu1);
 
-        final List j_ok = new ArrayList();
-        final ArrayAdapter adapterJok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_ok);
-        adapterJok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        queue = VolleySingleton.getInstance(this).getRequestQueue();
+        request = new MyRequest(this, queue);
 
-        final List j_nok = new ArrayList();
-        final ArrayAdapter adapterJnok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_nok);
-        adapterJnok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sessionManager = new SessionManager(this);
 
         textView = (TextView) findViewById(R.id.tv_pseudo);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         sp_j_ok = (AppCompatSpinner) findViewById(R.id.sp_j_ok);
         sp_j_nok = (AppCompatSpinner) findViewById(R.id.sp_j_nok);
-
-        queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
-
-        sessionManager = new SessionManager(this);
+        btn_duel = (Button) findViewById(R.id.btn_go_duel);
+        btn_nduel = (Button) findViewById(R.id.btn_go_duel_n);
 
         if(sessionManager.isLogged()){
             String pseudo = sessionManager.getPseudo();
             String id = sessionManager.getId();
             textView.setText(pseudo);
         }
+
+        final List j_ok = new ArrayList();
+        final ArrayAdapter adapterJok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_ok);
+        adapterJok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // ArrayList des id de joueur affrontés
+        final List id_j_ok = new ArrayList();
+
+        final List j_nok = new ArrayList();
+        final ArrayAdapter adapterJnok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_nok);
+        adapterJnok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // ArrayList des id des joueurs non affrontés
+        final List id_j_nok = new ArrayList();
 
         request.getJoueurok(Integer.valueOf(sessionManager.getId()), new MyRequest.getJoueurOkCallBack() {
             @Override
@@ -67,6 +75,7 @@ public class Menu1Activity extends AppCompatActivity {
                     for(Iterator iterator = json.keys(); iterator.hasNext();) {
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
+                        id_j_ok.add(cle);
                         j_ok.add(val);
                         sp_j_ok.setAdapter(adapterJok);
                     }
@@ -88,7 +97,7 @@ public class Menu1Activity extends AppCompatActivity {
                     for(Iterator iterator = json.keys(); iterator.hasNext();){
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
-                        /*id_couleur.add(cle);*/
+                        id_j_ok.add(cle);
                         j_nok.add(val);
                         sp_j_nok.setAdapter(adapterJnok);
                     }
@@ -100,6 +109,44 @@ public class Menu1Activity extends AppCompatActivity {
             @Override
             public void onError(String message) {
 
+            }
+        });
+
+        btn_duel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!j_ok.isEmpty()){
+                    // Récuperation de la position du spinner
+                    Integer id_j_ok_fin = sp_j_ok.getSelectedItemPosition();
+                    // Récuperation de l'id de la couleur en fonction de la position dans le spinner
+                    Object id_j_ok_fin2 = id_j_ok.get(id_j_ok_fin);
+
+                    Intent intent = new Intent();
+                    intent.putExtra("id_joueur2", id_j_ok_fin2.toString());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Pas de joueur déjà affrontés", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btn_duel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!j_ok.isEmpty()){
+                    // Récuperation de la position du spinner
+                    Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
+                    // Récuperation de l'id de la couleur en fonction de la position dans le spinner
+                    Object id_j_nok_fin2 = id_j_nok.get(id_j_nok_fin);
+
+                    Intent intent = new Intent();
+                    intent.putExtra("id_joueur2", id_j_nok_fin2.toString());
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Pas de joueur non affrontés", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
