@@ -135,7 +135,7 @@ public class Menu1Activity extends AppCompatActivity {
         btn_nduel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!j_ok.isEmpty()){
+                if(!j_nok.isEmpty()){
                     // Récuperation de la position du spinner
                     Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
                     // Récuperation de l'id de la couleur en fonction de la position dans le spinner
