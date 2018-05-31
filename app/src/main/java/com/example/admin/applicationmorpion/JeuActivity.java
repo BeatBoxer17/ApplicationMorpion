@@ -12,9 +12,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.example.admin.applicationmorpion.myrequest.MyRequest;
+
 import java.util.ArrayList;
 
 public class JeuActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private RequestQueue queue;
+    private MyRequest request;
+    private SessionManager sessionManager;
+    private TextView nom_j1, nom_j2;
 
     // Definition des variable
     // Tableau à deux dimension plateau[colonne][ligne]
@@ -30,15 +38,38 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     // Collection de tout les boutons
     private ArrayList<Button> all_buttons = new ArrayList<>();
 
+    private Button btn_retour;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jeu);
 
-        Intent intent = getIntent();
+        queue = VolleySingleton.getInstance(this).getRequestQueue();
+        request = new MyRequest(this, queue);
+        sessionManager = new SessionManager(this);
+
+        nom_j1 = (TextView) findViewById(R.id.joueur1);
+        nom_j2 = (TextView) findViewById(R.id.joueur2);
+
+        if(sessionManager.isLogged()){
+            String pseudo = sessionManager.getPseudo();
+            String id = sessionManager.getId();
+            nom_j1.setText(pseudo);
+        }
+
+        final Intent intent = getIntent();
         if(intent.hasExtra("create")){
             Toast.makeText(this, intent.getStringExtra("create"), Toast.LENGTH_SHORT).show();
         }
+        if(intent.hasExtra("id_joueur2")){
+            String id_joueur2 = intent.getStringExtra("id_joueur2");
+            String pseudo_joueur2 = intent.getStringExtra("pseudo_joueur2");
+            nom_j2.setText(pseudo_joueur2);
+        }
+
+        // Bouton retour
+        btn_retour = (Button) findViewById(R.id.btn_r_menu);
 
         // TextView pour le joueur qui va jouer
         tvJoueur = (TextView) findViewById(R.id.joueur);
@@ -73,7 +104,15 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             bt.setOnClickListener(this);
         }
 
-
+        // Quand on clique sur le bouton retour.
+        btn_retour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Menu1Activity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override

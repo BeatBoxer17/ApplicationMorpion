@@ -87,7 +87,7 @@ public class Menu1Activity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -119,11 +119,14 @@ public class Menu1Activity extends AppCompatActivity {
                 if(!j_ok.isEmpty()){
                     // Récuperation de la position du spinner
                     Integer id_j_ok_fin = sp_j_ok.getSelectedItemPosition();
-                    // Récuperation de l'id de la couleur en fonction de la position dans le spinner
+                    // Récuperation de l'id du joueur en fonction de la position dans le spinner
                     Object id_j_ok_fin2 = id_j_ok.get(id_j_ok_fin);
+                    // Récupeation du pseudo du joueur en fonction de la position dans le spinner
+                    Object j_ok_fin = j_ok.get(id_j_ok_fin);
 
-                    Intent intent = new Intent();
+                    Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
                     intent.putExtra("id_joueur2", id_j_ok_fin2.toString());
+                    intent.putExtra("pseudo_joueur2", j_ok_fin.toString());
                     startActivity(intent);
                     finish();
                 } else {
@@ -139,14 +142,17 @@ public class Menu1Activity extends AppCompatActivity {
                     // Récuperation de la position du spinner
                     Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
                     // Récuperation de l'id de la couleur en fonction de la position dans le spinner
-                    final String id_j_nok_fin2 = (String) id_j_nok.get(id_j_nok_fin);
+                    final Object id_j_nok_fin2 = id_j_nok.get(id_j_nok_fin);
+                    // Récupeation du pseudo du joueur en fonction de la position dans le spinner
+                    final Object j_nok_fin = j_nok.get(id_j_nok_fin);
 
-                    request.createDuel(sessionManager.getId(), id_j_nok_fin2, new MyRequest.createDuelCallBack() {
+                    request.createDuel(sessionManager.getId(), id_j_nok_fin2.toString(), new MyRequest.createDuelCallBack() {
                         @Override
                         public void onSucces(String message) {
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
-                            intent.putExtra("id_joueur2", id_j_nok_fin2);
+                            intent.putExtra("id_joueur2", id_j_nok_fin2.toString());
+                            intent.putExtra("pseudo_joueur2", j_nok_fin.toString());
                             intent.putExtra("create", message);
                             startActivity(intent);
                             finish();

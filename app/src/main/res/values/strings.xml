@@ -17,4 +17,5 @@
     <string name="deja_a">Joueur déjà affrontés</string>
     <string name="pas_deja_a">Joueur pas encore affrontés</string>
     <string name="c_est_partie">C\'est partie !</string>
+    <string name="retour">RETOUR</string>
 </resources>

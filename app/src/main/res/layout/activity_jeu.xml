@@ -4,7 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     tools:context="com.example.admin.applicationmorpion.JeuActivity">
+
+    <TextView
+        android:id="@+id/joueur1"
+        android:text="Test"
+        android:layout_above="@+id/scoreX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/joueur2"
+        android:text="Test"
+        android:layout_above="@+id/scoreO"
+        android:layout_alignRight="@+id/bt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/joueurX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/joueur1"
+        android:layout_alignLeft="@id/bt1"
+        android:text="Joueur X" />
+
+    <TextView
+        android:id="@+id/joueurO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/joueur2"
+        android:layout_alignRight="@id/bt3"
+        android:text="Joueur O"/>
+
+    <TextView
+        android:id="@+id/scoreX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/bt1"
+        android:text="0"
+        android:textSize="30dp"
+        android:layout_above="@id/bt1"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
+        android:id="@+id/scoreO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="30dp"
+        android:layout_alignRight="@id/bt3"
+        android:layout_above="@id/bt1"
+        android:layout_marginBottom="25dp" />
 
     <Button
         android:id="@+id/bt1"
@@ -116,40 +168,13 @@
         android:layout_marginTop="@dimen/margin_tv"
         android:text="X"/>
 
-    <TextView
-        android:id="@+id/joueurX"
+    <Button
+        android:id="@+id/btn_r_menu"
+        android:text="@string/retour"
+        android:layout_below="@+id/auTourDe"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="80dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/scoreX"
-        android:layout_alignLeft="@id/bt1"
-        android:text="Joueur X" />
-
-    <TextView
-        android:id="@+id/joueurO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/scoreO"
-        android:layout_alignRight="@id/bt3"
-        android:text="Joueur O"/>
-
-    <TextView
-        android:id="@+id/scoreX"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/bt1"
-        android:text="0"
-        android:textSize="30dp"
-        android:layout_above="@id/bt1"
-        android:layout_marginBottom="25dp" />
-
-    <TextView
-        android:id="@+id/scoreO"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:textSize="30dp"
-        android:layout_alignRight="@id/bt3"
-        android:layout_above="@id/bt1"
-        android:layout_marginBottom="25dp" />
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
