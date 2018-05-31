@@ -15,14 +15,18 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.example.admin.applicationmorpion.myrequest.MyRequest;
 
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class JeuActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RequestQueue queue;
     private MyRequest request;
     private SessionManager sessionManager;
-    private TextView nom_j1, nom_j2;
+    private TextView nom_j1, nom_j2, score1, score2;
 
     // Definition des variable
     // Tableau à deux dimension plateau[colonne][ligne]
@@ -40,6 +44,16 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
     private Button btn_retour;
 
+
+    private String id_joueur2 = "";
+    private String pseudo_joueur2 = "";
+    private String id_joueur1 = "";
+    private String pseudo_joueur1 = "";
+    private String couleurj1 = "";
+    private String couleurj2 = "";
+    private String scorej1 = "1";
+    private String scorej2 = "1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,30 +63,65 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         request = new MyRequest(this, queue);
         sessionManager = new SessionManager(this);
 
-        nom_j1 = (TextView) findViewById(R.id.joueur1);
-        nom_j2 = (TextView) findViewById(R.id.joueur2);
-
-        if(sessionManager.isLogged()){
-            String pseudo = sessionManager.getPseudo();
-            String id = sessionManager.getId();
-            nom_j1.setText(pseudo);
-        }
-
         final Intent intent = getIntent();
         if(intent.hasExtra("create")){
             Toast.makeText(this, intent.getStringExtra("create"), Toast.LENGTH_SHORT).show();
         }
-        if(intent.hasExtra("id_joueur2")){
-            String id_joueur2 = intent.getStringExtra("id_joueur2");
-            String pseudo_joueur2 = intent.getStringExtra("pseudo_joueur2");
-            nom_j2.setText(pseudo_joueur2);
+
+        nom_j1 = (TextView) findViewById(R.id.joueur1);
+        nom_j2 = (TextView) findViewById(R.id.joueur2);
+        score1 = (TextView) findViewById(R.id.scoreX);
+        score2 = (TextView) findViewById(R.id.scoreO);
+
+        if(sessionManager.isLogged()){
+            pseudo_joueur1 = sessionManager.getPseudo();
+            id_joueur1 = sessionManager.getId();
         }
+
+        if(intent.hasExtra("id_joueur2")){
+            id_joueur2 = intent.getStringExtra("id_joueur2");
+            pseudo_joueur2 = intent.getStringExtra("pseudo_joueur2");
+        }
+
+        request.getInfoJoueur(id_joueur1, id_joueur2, id_joueur1, new MyRequest.getInfoJoueurCallBack() {
+            @Override
+            public void onSucces(String score, String couleur) {
+                couleurj1 = couleur;
+                scorej1 = score;
+                score1.setText(scorej1);
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        request.getInfoJoueur(id_joueur1, id_joueur2, id_joueur2, new MyRequest.getInfoJoueurCallBack() {
+            @Override
+            public void onSucces(String score, String couleur) {
+                couleurj2 = couleur;
+                scorej2 = score;
+                score2.setText(scorej2);
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        nom_j1.setText(pseudo_joueur1);
+        nom_j2.setText(pseudo_joueur2);
+
+
 
         // Bouton retour
         btn_retour = (Button) findViewById(R.id.btn_r_menu);
 
         // TextView pour le joueur qui va jouer
         tvJoueur = (TextView) findViewById(R.id.joueur);
+        tvJoueur.setText(pseudo_joueur1);
 
         // Boutton / Case
         Button bt1 = (Button) findViewById(R.id.bt1);
@@ -175,13 +224,13 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         if (joueurEnCours == 1) {
             // On met O
             joueurEnCours = 2;
-            tvJoueur.setText("O");
+            tvJoueur.setText(pseudo_joueur2);
         }
         // Sinon c'est O
         else {
             // On met X
             joueurEnCours = 1;
-            tvJoueur.setText("X");
+            tvJoueur.setText(pseudo_joueur1);
         }
 
         // Regarder s'il y a un vainqueur
@@ -191,11 +240,43 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             int ScoreXint = Integer.valueOf(ScoreX.getText().toString());
             ScoreXint = ScoreXint + 1;
             ScoreX.setText(String.valueOf(ScoreXint));
+            request.updateScore(id_joueur1, id_joueur2, id_joueur1, new MyRequest.updateScoreCallBack() {
+                @Override
+                public void onSucces(String message) {
+
+                }
+
+                @Override
+                public void inputErrors(Map<String, String> errors) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+
+                }
+            });
         } else if (res == 2){
             TextView ScoreO = (TextView) findViewById(R.id.scoreO);
             int ScoreOint = Integer.valueOf(ScoreO.getText().toString());
             ScoreOint = ScoreOint + 1;
             ScoreO.setText(String.valueOf(ScoreOint));
+            request.updateScore(id_joueur1, id_joueur2, id_joueur2, new MyRequest.updateScoreCallBack() {
+                @Override
+                public void onSucces(String message) {
+
+                }
+
+                @Override
+                public void inputErrors(Map<String, String> errors) {
+
+                }
+
+                @Override
+                public void onError(String message) {
+
+                }
+            });
         } else{
 
         }
@@ -261,9 +342,9 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
         String strToDisplay = "";
         if (res == 1)
-            strToDisplay = "Le joueur X à gagné !";
+            strToDisplay = pseudo_joueur1+" à gagné !";
         if (res == 2)
-            strToDisplay = "Le joueur O à gagné !";
+            strToDisplay = pseudo_joueur2+" à gagné !";
         if (res == 3)
             strToDisplay = "Egalité !";
 
