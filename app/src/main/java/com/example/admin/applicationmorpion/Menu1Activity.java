@@ -98,7 +98,7 @@ public class Menu1Activity extends AppCompatActivity {
                     for(Iterator iterator = json.keys(); iterator.hasNext();){
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
-                        id_j_ok.add(cle);
+                        id_j_nok.add(cle);
                         j_nok.add(val);
                         sp_j_nok.setAdapter(adapterJnok);
                     }
@@ -139,13 +139,14 @@ public class Menu1Activity extends AppCompatActivity {
                     // Récuperation de la position du spinner
                     Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
                     // Récuperation de l'id de la couleur en fonction de la position dans le spinner
-                    final Object id_j_nok_fin2 = id_j_nok.get(id_j_nok_fin);
+                    final String id_j_nok_fin2 = (String) id_j_nok.get(id_j_nok_fin);
 
-                    request.createDuel(sessionManager.getId(), String.valueOf(id_j_nok_fin2), new MyRequest.createDuelCallBack() {
+                    request.createDuel(sessionManager.getId(), id_j_nok_fin2, new MyRequest.createDuelCallBack() {
                         @Override
                         public void onSucces(String message) {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
-                            intent.putExtra("id_joueur2", id_j_nok_fin2.toString());
+                            intent.putExtra("id_joueur2", id_j_nok_fin2);
                             intent.putExtra("create", message);
                             startActivity(intent);
                             finish();

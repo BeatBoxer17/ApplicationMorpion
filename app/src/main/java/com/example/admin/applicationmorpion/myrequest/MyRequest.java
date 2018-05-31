@@ -361,7 +361,7 @@ public class MyRequest {
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> map = new HashMap<>();
-                map.put("id_joueur", id_joueur);
+                map.put("id_joueur1", id_joueur);
                 map.put("id_joueur2", id_joueur2);
 
                 return map;
