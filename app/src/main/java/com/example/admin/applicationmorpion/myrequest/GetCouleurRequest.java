@@ -16,11 +16,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by admin on 01/06/2018.
- */
-
 public class GetCouleurRequest {
+
     private Context context;
     private RequestQueue queue;
 
@@ -38,15 +35,22 @@ public class GetCouleurRequest {
             public void onResponse(String response) {
 
                 try {
-                    JSONObject json = new JSONObject(response);
 
-                    callBack.onSucces(json);
+                    JSONObject json = new JSONObject(response);
+                    Boolean error = Boolean.valueOf(json.getString("error"));
+
+                    if(error){
+                        callBack.onError(json.getString("message"));
+                    } else {
+                        callBack.onSucces(json);
+                    }
 
                 } catch (JSONException e) {
+
                     callBack.onError("Une erreure c'est produite");
                     e.printStackTrace();
-                }
 
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -60,15 +64,7 @@ public class GetCouleurRequest {
                 }
 
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-                Map<String, String> map = new HashMap<>();
-
-                return map;
-            }
-        };
+        });
 
         queue.add(request);
 

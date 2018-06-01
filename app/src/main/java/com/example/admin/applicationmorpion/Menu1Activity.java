@@ -25,6 +25,7 @@ import java.util.Map;
 
 public class Menu1Activity extends AppCompatActivity {
 
+    // Déclaration des variable
     private SessionManager sessionManager;
     private TextView textView;
     private Button btn_logout, btn_duel, btn_nduel, btn_ajout;
@@ -43,9 +44,9 @@ public class Menu1Activity extends AppCompatActivity {
         createDuelRequest = new CreateDuelRequest(this, queue);
         getJoueurNokRequest = new GetJoueurNokRequest(this, queue);
         getJoueurOkRequest = new GetJoueurOkRequest(this, queue);
-
         sessionManager = new SessionManager(this);
 
+        // Récuperation des élément du XML
         textView = (TextView) findViewById(R.id.tv_pseudo);
         btn_logout = (Button) findViewById(R.id.btn_logout);
         sp_j_ok = (AppCompatSpinner) findViewById(R.id.sp_j_ok);
@@ -54,12 +55,13 @@ public class Menu1Activity extends AppCompatActivity {
         btn_nduel = (Button) findViewById(R.id.btn_go_duel_n);
         btn_ajout = (Button) findViewById(R.id.btn_ajout);
 
+        // S'il y a un joueur connecté en sission on recupère son id et on le met dans le texview
         if(sessionManager.isLogged()){
             String pseudo = sessionManager.getPseudo();
-            String id = sessionManager.getId();
             textView.setText(pseudo);
         }
 
+        // ArrayList des pseudo des joueur affrontés
         final List j_ok = new ArrayList();
         final ArrayAdapter adapterJok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_ok);
         adapterJok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -67,6 +69,7 @@ public class Menu1Activity extends AppCompatActivity {
         // ArrayList des id de joueur affrontés
         final List id_j_ok = new ArrayList();
 
+        // ArrayList des pseudo des joueur non affrontés
         final List j_nok = new ArrayList();
         final ArrayAdapter adapterJnok = new ArrayAdapter(this, android.R.layout.simple_spinner_item, j_nok);
         adapterJnok.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -74,10 +77,13 @@ public class Menu1Activity extends AppCompatActivity {
         // ArrayList des id des joueurs non affrontés
         final List id_j_nok = new ArrayList();
 
+        // Requêtes pour récuperer les joueur deja affrontrer
         getJoueurOkRequest.getJoueurok(Integer.valueOf(sessionManager.getId()), new GetJoueurOkRequest.getJoueurOkCallBack() {
             @Override
+            // S'il y n'a pas d'erreur
             public void onSucces(JSONObject json) {
                 try{
+                    // Pour chaque jooueur on met son psuedo dans j_ok et son id dans id_j_ok
                     for(Iterator iterator = json.keys(); iterator.hasNext();) {
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
@@ -96,10 +102,13 @@ public class Menu1Activity extends AppCompatActivity {
             }
         });
 
+        // Requêtes pour récuperer les joueur non affrontrer
         getJoueurNokRequest.getJoueurNok(Integer.valueOf(sessionManager.getId()), new GetJoueurNokRequest.getJoueurNokCallBack() {
             @Override
+            // S'il y n'a pas d'erreur
             public void onSucces(JSONObject json) {
                 try{
+                    // Pour chaque jooueur on met son psuedo dans j_nok et son id dans id_j_nok
                     for(Iterator iterator = json.keys(); iterator.hasNext();){
                         Object cle = iterator.next();
                         Object val = json.get(String.valueOf(cle));
@@ -118,9 +127,11 @@ public class Menu1Activity extends AppCompatActivity {
             }
         });
 
+        // Quand on clique sont le bouton pour un duel contre un joueur deja affronté
         btn_duel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Si la liste n'est pas vide
                 if(!j_ok.isEmpty()){
                     // Récuperation de la position du spinner
                     Integer id_j_ok_fin = sp_j_ok.getSelectedItemPosition();
@@ -129,20 +140,23 @@ public class Menu1Activity extends AppCompatActivity {
                     // Récupeation du pseudo du joueur en fonction de la position dans le spinner
                     Object j_ok_fin = j_ok.get(id_j_ok_fin);
 
+                    // On sur l'activité Jeu en envoyant l'id et le pseudo du joueur de la liste
                     Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
                     intent.putExtra("id_joueur2", id_j_ok_fin2.toString());
                     intent.putExtra("pseudo_joueur2", j_ok_fin.toString());
                     startActivity(intent);
                     finish();
-                } else {
+                } else { // Si la liste est vide
                     Toast.makeText(getApplicationContext(), "Pas de joueur déjà affrontés", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        // Quand on clique sont le bouton pour un duel contre un joueur non affronté
         btn_nduel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Si la liste n'est pas vide
                 if(!j_nok.isEmpty()){
                     // Récuperation de la position du spinner
                     Integer id_j_nok_fin = sp_j_nok.getSelectedItemPosition();
@@ -151,8 +165,10 @@ public class Menu1Activity extends AppCompatActivity {
                     // Récupeation du pseudo du joueur en fonction de la position dans le spinner
                     final Object j_nok_fin = j_nok.get(id_j_nok_fin);
 
+                    // Requete pour crée un nouvau duel
                     createDuelRequest.createDuel(sessionManager.getId(), id_j_nok_fin2.toString(), new CreateDuelRequest.createDuelCallBack() {
                         @Override
+                        // S'il n'y a pas d'erreur on sur l'activité Jeu en envoyant l'id et le pseudo du joueur de la liste
                         public void onSucces(String message) {
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), JeuActivity.class);
@@ -180,6 +196,7 @@ public class Menu1Activity extends AppCompatActivity {
             }
         });
 
+        // Quand on clique sur le bouton ajouter on va sur ll'acitivité pour inscrire un joueur
         btn_ajout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -189,6 +206,7 @@ public class Menu1Activity extends AppCompatActivity {
             }
         });
 
+        // Qaund on clique sur le bouton deconnexion, ça supprime le joueur de la session et ça nous emmene sur le MainActivity
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

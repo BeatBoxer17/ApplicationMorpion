@@ -16,10 +16,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by admin on 01/06/2018.
- */
-
 public class RegisterRequest{
 
     private Context context;

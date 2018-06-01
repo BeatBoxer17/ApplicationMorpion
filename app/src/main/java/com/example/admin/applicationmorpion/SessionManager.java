@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
+    // Déclaration des variable
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
     private final static String PREF_NAME = "app_prefs";
@@ -21,22 +22,27 @@ public class SessionManager {
         editor = prefs.edit();
     }
 
+    // Renvoie true si il y a un joueur de connecté en session sinon false
     public boolean isLogged(){
         return prefs.getBoolean(IS_LOGGED, false);
     }
 
-    public  String getPseudo(){
+    // Renvoie le pseudo du joueur
+    public String getPseudo(){
         return prefs.getString(PSEUDO, null);
     }
 
-    public  String getId(){
+    // Renvoie le pseudo du joueur
+    public String getId(){
         return prefs.getString(ID, null);
     }
 
+    // Renvoiee l'id_couleur du joueur
     public String getIdCouleur(){
         return prefs.getString(ID_COULEUR, null);
     }
 
+    // Ajouter le joueur en session
     public void insertUser(String id, String pseudo, String id_couleur){
         editor.putBoolean(IS_LOGGED, true);
         editor.putString(ID, id);
@@ -45,6 +51,7 @@ public class SessionManager {
         editor.commit();
     }
 
+    // Supprime le joueur de la session
     public void logout(){
          editor.clear().commit();
     }

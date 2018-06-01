@@ -26,6 +26,15 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     private TextView nom_j1, nom_j2, score1, score2;
     private GetInfoJoueurRequest getInfoJoueurRequest;
     private UpdateScoreRequest updateScoreRequest;
+    private Button btn_retour;
+    private String id_joueur2 = "";
+    private String pseudo_joueur2 = "";
+    private String id_joueur1 = "";
+    private String pseudo_joueur1 = "";
+    private String scorej1 = "0";
+    private String scorej2 = "0";
+    private Integer couleurj1 = 0;
+    public Integer couleurj2 = 0;
 
     // Definition des variable
     // Tableau à deux dimension plateau[colonne][ligne]
@@ -41,18 +50,6 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     // Collection de tout les boutons
     private ArrayList<Button> all_buttons = new ArrayList<>();
 
-    private Button btn_retour;
-
-
-    private String id_joueur2 = "";
-    private String pseudo_joueur2 = "";
-    private String id_joueur1 = "";
-    private String pseudo_joueur1 = "";
-    private String scorej1 = "1";
-    private String scorej2 = "1";
-    private Integer couleurj1 = 0;
-    public Integer couleurj2 = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,27 +60,37 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         getInfoJoueurRequest = new GetInfoJoueurRequest(this, queue);
         sessionManager = new SessionManager(this);
 
+        // Si c'est un nouveau duel crée on marque un messsage
         final Intent intent = getIntent();
         if(intent.hasExtra("create")){
             Toast.makeText(this, intent.getStringExtra("create"), Toast.LENGTH_SHORT).show();
         }
 
+        // Récuperation des Element du XML
         nom_j1 = (TextView) findViewById(R.id.joueur1);
         nom_j2 = (TextView) findViewById(R.id.joueur2);
         score1 = (TextView) findViewById(R.id.scoreX);
         score2 = (TextView) findViewById(R.id.scoreO);
+        btn_retour = (Button) findViewById(R.id.btn_r_menu);
 
+        // S'il y aun joueur de connecté en session, on recuper son id, son pseudo et sa couleur
         if(sessionManager.isLogged()){
             pseudo_joueur1 = sessionManager.getPseudo();
             id_joueur1 = sessionManager.getId();
             couleurj1 = Integer.valueOf(sessionManager.getIdCouleur());
         }
 
+        // On recupere les donné passer en intent du second joueur, son id et son pseudo
         if(intent.hasExtra("id_joueur2")) {
             id_joueur2 = intent.getStringExtra("id_joueur2");
             pseudo_joueur2 = intent.getStringExtra("pseudo_joueur2");
         }
 
+        // On ajoute les pseudo recuperer au TextViews
+        nom_j1.setText(pseudo_joueur1);
+        nom_j2.setText(pseudo_joueur2);
+
+        // Requetes pour recuperé le score du joueur 1 dans ce duel
         getInfoJoueurRequest.getInfoJoueur(id_joueur1, id_joueur2, id_joueur1, new GetInfoJoueurRequest.getInfoJoueurCallBack() {
             @Override
             public void onSucces(String score, String couleur) {
@@ -97,6 +104,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             }
         });
 
+        // Requete pour recuperer le score du joueur2 dans ce duel
         getInfoJoueurRequest.getInfoJoueur(id_joueur1, id_joueur2, id_joueur2, new GetInfoJoueurRequest.getInfoJoueurCallBack() {
             @Override
             public void onSucces(String score, String couleur) {
@@ -110,12 +118,6 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
-
-        nom_j1.setText(pseudo_joueur1);
-        nom_j2.setText(pseudo_joueur2);
-
-        // Bouton retour
-        btn_retour = (Button) findViewById(R.id.btn_r_menu);
 
         // TextView pour le joueur qui va jouer
         tvJoueur = (TextView) findViewById(R.id.joueur);
@@ -151,7 +153,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             bt.setOnClickListener(this);
         }
 
-        // Quand on clique sur le bouton retour.
+        // Quand on clique sur le bouton retour on retourne sur le Menu1.
         btn_retour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,6 +165,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    // Au clic sur une des case du morpion
     public void onClick(View view) {
 
         // Si personne à cliquer sur ce boutton
@@ -170,7 +173,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             return;
         }
 
-        // Si view.getId == R.id.bt1
+        // On associe a la case le joueur qui a cliquer sur cette case
         switch (view.getId()) {
             case R.id.bt1:
                 plateau[0][0] = joueurEnCours;
@@ -291,11 +294,15 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
         // Regarder s'il y a un vainqueur
         int res = checkWinner();
+        // Si checkWinner retourne 1 c'est joueur1 qui gagner
         if (res == 1){
+
             TextView ScoreX = (TextView) findViewById(R.id.scoreX);
             int ScoreXint = Integer.valueOf(ScoreX.getText().toString());
             ScoreXint = ScoreXint + 1;
             ScoreX.setText(String.valueOf(ScoreXint));
+
+            // Requete qui ajoute plus 1 au joueur qui à gagner donc joueur1 ici
             updateScoreRequest.updateScore(id_joueur1, id_joueur2, id_joueur1, new UpdateScoreRequest.updateScoreCallBack() {
                 @Override
                 public void onSucces(String message) {
@@ -312,11 +319,14 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
                 }
             });
-        } else if (res == 2){
+        } else if (res == 2){ // Si checkWinner retourne 2 c'est  joueur 2 qui a gagner
+
             TextView ScoreO = (TextView) findViewById(R.id.scoreO);
             int ScoreOint = Integer.valueOf(ScoreO.getText().toString());
             ScoreOint = ScoreOint + 1;
             ScoreO.setText(String.valueOf(ScoreOint));
+
+            // Requete qui ajoute plus 1 au joueur qui à gagner donc joueur2 ici
             updateScoreRequest.updateScore(id_joueur1, id_joueur2, id_joueur2, new UpdateScoreRequest.updateScoreCallBack() {
                 @Override
                 public void onSucces(String message) {
@@ -333,7 +343,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
                 }
             });
-        } else{
+        } else{ // Sinon on ne fait rien
 
         }
 
@@ -393,16 +403,20 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     // 2 : O
     // 3 : egalite
     private void displayAlertDialog(int res){
-        if (res == 0) // partie non termine
+        if (res == 0) { // partie non termine
             return;
+        }
 
         String strToDisplay = "";
-        if (res == 1)
-            strToDisplay = pseudo_joueur1+" à gagné !";
-        if (res == 2)
-            strToDisplay = pseudo_joueur2+" à gagné !";
-        if (res == 3)
+        if (res == 1) {
+            strToDisplay = pseudo_joueur1 + " à gagné !";
+        }
+        if (res == 2) {
+            strToDisplay = pseudo_joueur2 + " à gagné !";
+        }
+        if (res == 3) {
             strToDisplay = "Egalité !";
+        }
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Fin de la partie");

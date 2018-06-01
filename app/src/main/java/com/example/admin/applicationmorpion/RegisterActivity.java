@@ -63,10 +63,10 @@ public class RegisterActivity extends AppCompatActivity {
         // ArrayList des id de couleur
         final List id_couleur = new ArrayList();
 
-        // Appel de la requête getCouleur
+        // Requête pour récupeérer toutes les couleur de la base
         getCouleurRequest.getCouleur(new GetCouleurRequest.getCouleurCallBack() {
             @Override
-            // Si la requête reussi
+            // Si il n'y a pas d'erreur
             public void onSucces(JSONObject json) {
                 try{
                     // On parcours l'objet retourner afin d'ajouter les libelle et les id des couleur à leur ArrayList
@@ -83,12 +83,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             @Override
+            // S'il y a des erreur
             public void onError(String message) {
-
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Au clicl sur le bouton d'inscription
+        // Quand on clique sur le bouton s'inscrire
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,6 +162,7 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         // S'il y a des erreurs de connection ou de la librairie volley
                         public void onError(String message) {
+                            // On cache la progress bar
                             pb_loader.setVisibility(View.GONE);
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
