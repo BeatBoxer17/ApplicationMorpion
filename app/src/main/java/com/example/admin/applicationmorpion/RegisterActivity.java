@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -15,7 +12,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.example.admin.applicationmorpion.myrequest.MyRequest;
+import com.example.admin.applicationmorpion.myrequest.GetCouleurRequest;
+import com.example.admin.applicationmorpion.myrequest.RegisterRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +31,8 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar pb_loader;
     private Spinner sp_couleur;
     private RequestQueue queue;
-    private MyRequest request;
-
+    private RegisterRequest registerRequest;
+    private GetCouleurRequest getCouleurRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
+        registerRequest = new RegisterRequest(this, queue);
+        getCouleurRequest = new GetCouleurRequest(this, queue);
 
         // Récuperaion des élément du XML
         sp_couleur = (Spinner) findViewById(R.id.spinner_couleur);
@@ -65,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         final List id_couleur = new ArrayList();
 
         // Appel de la requête getCouleur
-        request.getCouleur(new MyRequest.getCouleurCallBack() {
+        getCouleurRequest.getCouleur(new GetCouleurRequest.getCouleurCallBack() {
             @Override
             // Si la requête reussi
             public void onSucces(JSONObject json) {
@@ -112,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // Si les champs ne sont pas vide
                 if(pseudo.length() > 0 && email.length() > 0 && password.length() > 0 && password2.length() > 0 && nom.length() > 0 && prenom.length() > 0 && !id_couleur_fin2.toString().isEmpty()) {
                     // Requetes pour inscrire un joueur
-                    request.register(nom, prenom, pseudo, email, password, password2, id_couleur_fin2.toString(), new MyRequest.RegisterCallBack() {
+                    registerRequest.register(nom, prenom, pseudo, email, password, password2, id_couleur_fin2.toString(), new RegisterRequest.RegisterCallBack() {
                         @Override
                         // Si elle reussi
                         public void onSucces(String message) {

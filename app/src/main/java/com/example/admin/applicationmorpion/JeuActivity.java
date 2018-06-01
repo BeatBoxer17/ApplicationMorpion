@@ -13,10 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.example.admin.applicationmorpion.myrequest.MyRequest;
-
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+import com.example.admin.applicationmorpion.myrequest.GetInfoJoueurRequest;
+import com.example.admin.applicationmorpion.myrequest.UpdateScoreRequest;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -24,9 +22,10 @@ import java.util.Map;
 public class JeuActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RequestQueue queue;
-    private MyRequest request;
     private SessionManager sessionManager;
     private TextView nom_j1, nom_j2, score1, score2;
+    private GetInfoJoueurRequest getInfoJoueurRequest;
+    private UpdateScoreRequest updateScoreRequest;
 
     // Definition des variable
     // Tableau à deux dimension plateau[colonne][ligne]
@@ -49,10 +48,10 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
     private String pseudo_joueur2 = "";
     private String id_joueur1 = "";
     private String pseudo_joueur1 = "";
-    private String couleurj1 = "";
-    private String couleurj2 = "";
     private String scorej1 = "1";
     private String scorej2 = "1";
+    private Integer couleurj1 = 0;
+    public Integer couleurj2 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,8 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_jeu);
 
         queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
+        updateScoreRequest = new UpdateScoreRequest(this, queue);
+        getInfoJoueurRequest = new GetInfoJoueurRequest(this, queue);
         sessionManager = new SessionManager(this);
 
         final Intent intent = getIntent();
@@ -76,17 +76,17 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         if(sessionManager.isLogged()){
             pseudo_joueur1 = sessionManager.getPseudo();
             id_joueur1 = sessionManager.getId();
+            couleurj1 = Integer.valueOf(sessionManager.getIdCouleur());
         }
 
-        if(intent.hasExtra("id_joueur2")){
+        if(intent.hasExtra("id_joueur2")) {
             id_joueur2 = intent.getStringExtra("id_joueur2");
             pseudo_joueur2 = intent.getStringExtra("pseudo_joueur2");
         }
 
-        request.getInfoJoueur(id_joueur1, id_joueur2, id_joueur1, new MyRequest.getInfoJoueurCallBack() {
+        getInfoJoueurRequest.getInfoJoueur(id_joueur1, id_joueur2, id_joueur1, new GetInfoJoueurRequest.getInfoJoueurCallBack() {
             @Override
             public void onSucces(String score, String couleur) {
-                couleurj1 = couleur;
                 scorej1 = score;
                 score1.setText(scorej1);
             }
@@ -97,10 +97,10 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             }
         });
 
-        request.getInfoJoueur(id_joueur1, id_joueur2, id_joueur2, new MyRequest.getInfoJoueurCallBack() {
+        getInfoJoueurRequest.getInfoJoueur(id_joueur1, id_joueur2, id_joueur2, new GetInfoJoueurRequest.getInfoJoueurCallBack() {
             @Override
             public void onSucces(String score, String couleur) {
-                couleurj2 = couleur;
+                couleurj2 = Integer.valueOf(couleur);
                 scorej2 = score;
                 score2.setText(scorej2);
             }
@@ -113,8 +113,6 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
 
         nom_j1.setText(pseudo_joueur1);
         nom_j2.setText(pseudo_joueur2);
-
-
 
         // Bouton retour
         btn_retour = (Button) findViewById(R.id.btn_r_menu);
@@ -206,14 +204,72 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
         }
 
         // image a mettre
-        Drawable drawableJoueur;
+        Drawable drawableJoueur = null;
         // Si le joueur qui doit jouer est X
         if (joueurEnCours == 1) {
-            drawableJoueur = ContextCompat.getDrawable(this, R.drawable.x);
+            if (couleurj1 == 1){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.rougex);
+            }
+            if (couleurj1 == 2){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.jaunex);
+            }
+            if (couleurj1 == 3){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.bleux);
+            }
+            if (couleurj1 == 4){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.vertx);
+            }
+            if (couleurj1 == 5){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.noirx);
+            }
+            if (couleurj1 == 6){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.marronx);
+            }
+            if (couleurj1 == 7){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.rosex);
+            }
+            if (couleurj1 == 8){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.violetx);
+            }
+            if (couleurj1 == 9){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.orangex);
+            }
+            if (couleurj1 == 10){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.grisx);
+            }
         }
         // Sinon c'est O
         else {
-            drawableJoueur = ContextCompat.getDrawable(this, R.drawable.o);
+            if (couleurj2 == 1){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.rougeo);
+            }
+            if (couleurj2 == 2){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.jauneo);
+            }
+            if (couleurj2 == 3){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.bleuo);
+            }
+            if (couleurj2 == 4){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.verto);
+            }
+            if (couleurj2 == 5){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.noiro);
+            }
+            if (couleurj2 == 6){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.marrono);
+            }
+            if (couleurj2 == 7){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.roseo);
+            }
+            if (couleurj2 == 8){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.violeto);
+            }
+            if (couleurj2 == 9){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.orangeo);
+            }
+            if (couleurj2 == 10){
+                drawableJoueur = ContextCompat.getDrawable(this, R.drawable.griso);
+            }
         }
 
         // Mettre le fond au button
@@ -240,7 +296,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             int ScoreXint = Integer.valueOf(ScoreX.getText().toString());
             ScoreXint = ScoreXint + 1;
             ScoreX.setText(String.valueOf(ScoreXint));
-            request.updateScore(id_joueur1, id_joueur2, id_joueur1, new MyRequest.updateScoreCallBack() {
+            updateScoreRequest.updateScore(id_joueur1, id_joueur2, id_joueur1, new UpdateScoreRequest.updateScoreCallBack() {
                 @Override
                 public void onSucces(String message) {
 
@@ -261,7 +317,7 @@ public class JeuActivity extends AppCompatActivity implements View.OnClickListen
             int ScoreOint = Integer.valueOf(ScoreO.getText().toString());
             ScoreOint = ScoreOint + 1;
             ScoreO.setText(String.valueOf(ScoreOint));
-            request.updateScore(id_joueur1, id_joueur2, id_joueur2, new MyRequest.updateScoreCallBack() {
+            updateScoreRequest.updateScore(id_joueur1, id_joueur2, id_joueur2, new UpdateScoreRequest.updateScoreCallBack() {
                 @Override
                 public void onSucces(String message) {
 

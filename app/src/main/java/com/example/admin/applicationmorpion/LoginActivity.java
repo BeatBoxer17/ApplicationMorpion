@@ -11,14 +11,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.example.admin.applicationmorpion.myrequest.MyRequest;
+import com.example.admin.applicationmorpion.myrequest.ConnectionRequest;
 
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputLayout til_pseudo_log, til_password_log;
     private Button btn_send;
     private RequestQueue queue;
-    private MyRequest request;
+    private ConnectionRequest connectionRequest;
     private ProgressBar pb_loader;
     private Handler handler;
     private SessionManager sessionManager;
@@ -39,9 +39,15 @@ public class LoginActivity extends AppCompatActivity {
         pb_loader = (ProgressBar) findViewById(R.id.pb_loader_log);
 
         queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
+        connectionRequest = new ConnectionRequest(this, queue);
         handler = new Handler();
         sessionManager = new SessionManager(this);
+
+        if(sessionManager.isLogged()){
+            Intent test = new Intent(this, Menu1Activity.class);
+            startActivity(test);
+            finish();
+        }
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,11 +59,11 @@ public class LoginActivity extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            request.connection(pseudo, password, new MyRequest.LoginCallBack() {
+                            connectionRequest.connection(pseudo, password, new ConnectionRequest.LoginCallBack() {
                                 @Override
-                                public void onSucces(String id, String pseudo) {
+                                public void onSucces(String id, String pseudo, String id_couleur) {
                                     pb_loader.setVisibility(View.GONE);
-                                    sessionManager.insertUser(id, pseudo);
+                                    sessionManager.insertUser(id, pseudo, id_couleur);
                                     Intent intent = new Intent(getApplicationContext(), Menu1Activity.class);
                                     startActivity(intent);
                                     finish();

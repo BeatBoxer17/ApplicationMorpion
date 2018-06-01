@@ -4,16 +4,16 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.example.admin.applicationmorpion.myrequest.MyRequest;
+import com.example.admin.applicationmorpion.myrequest.CreateDuelRequest;
+import com.example.admin.applicationmorpion.myrequest.GetJoueurNokRequest;
+import com.example.admin.applicationmorpion.myrequest.GetJoueurOkRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,9 +27,11 @@ public class Menu1Activity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private TextView textView;
-    private Button btn_logout, btn_duel, btn_nduel;
+    private Button btn_logout, btn_duel, btn_nduel, btn_ajout;
     private RequestQueue queue;
-    private MyRequest request;
+    private CreateDuelRequest createDuelRequest;
+    private GetJoueurNokRequest getJoueurNokRequest;
+    private GetJoueurOkRequest getJoueurOkRequest;
     private AppCompatSpinner sp_j_ok, sp_j_nok;
 
     @Override
@@ -38,7 +40,9 @@ public class Menu1Activity extends AppCompatActivity {
         setContentView(R.layout.activity_menu1);
 
         queue = VolleySingleton.getInstance(this).getRequestQueue();
-        request = new MyRequest(this, queue);
+        createDuelRequest = new CreateDuelRequest(this, queue);
+        getJoueurNokRequest = new GetJoueurNokRequest(this, queue);
+        getJoueurOkRequest = new GetJoueurOkRequest(this, queue);
 
         sessionManager = new SessionManager(this);
 
@@ -48,6 +52,7 @@ public class Menu1Activity extends AppCompatActivity {
         sp_j_nok = (AppCompatSpinner) findViewById(R.id.sp_j_nok);
         btn_duel = (Button) findViewById(R.id.btn_go_duel);
         btn_nduel = (Button) findViewById(R.id.btn_go_duel_n);
+        btn_ajout = (Button) findViewById(R.id.btn_ajout);
 
         if(sessionManager.isLogged()){
             String pseudo = sessionManager.getPseudo();
@@ -69,7 +74,7 @@ public class Menu1Activity extends AppCompatActivity {
         // ArrayList des id des joueurs non affrontés
         final List id_j_nok = new ArrayList();
 
-        request.getJoueurok(Integer.valueOf(sessionManager.getId()), new MyRequest.getJoueurOkCallBack() {
+        getJoueurOkRequest.getJoueurok(Integer.valueOf(sessionManager.getId()), new GetJoueurOkRequest.getJoueurOkCallBack() {
             @Override
             public void onSucces(JSONObject json) {
                 try{
@@ -87,11 +92,11 @@ public class Menu1Activity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        request.getJoueurNok(Integer.valueOf(sessionManager.getId()), new MyRequest.getJoueurNokCallBack() {
+        getJoueurNokRequest.getJoueurNok(Integer.valueOf(sessionManager.getId()), new GetJoueurNokRequest.getJoueurNokCallBack() {
             @Override
             public void onSucces(JSONObject json) {
                 try{
@@ -146,7 +151,7 @@ public class Menu1Activity extends AppCompatActivity {
                     // Récupeation du pseudo du joueur en fonction de la position dans le spinner
                     final Object j_nok_fin = j_nok.get(id_j_nok_fin);
 
-                    request.createDuel(sessionManager.getId(), id_j_nok_fin2.toString(), new MyRequest.createDuelCallBack() {
+                    createDuelRequest.createDuel(sessionManager.getId(), id_j_nok_fin2.toString(), new CreateDuelRequest.createDuelCallBack() {
                         @Override
                         public void onSucces(String message) {
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -172,6 +177,15 @@ public class Menu1Activity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Pas de joueur non affrontés", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btn_ajout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

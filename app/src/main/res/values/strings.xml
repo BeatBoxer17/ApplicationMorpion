@@ -18,4 +18,6 @@
     <string name="pas_deja_a">Joueur pas encore affrontés</string>
     <string name="c_est_partie">C\'est partie !</string>
     <string name="retour">RETOUR</string>
+    <string name="tv_ajouter">Pas de joueur à affronté ? Inscrit en un autre ici.</string>
+    <string name="btn_ajouter">Ajouter</string>
 </resources>

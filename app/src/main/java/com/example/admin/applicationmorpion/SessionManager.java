@@ -10,8 +10,9 @@ public class SessionManager {
     private final static String PREF_NAME = "app_prefs";
     private final static  int PRIVATE_MODE = 0;
     private final static String IS_LOGGED = "isloged";
-    private final static  String PSEUDO = "pseudo";
+    private final static String PSEUDO = "pseudo";
     private final static String ID = "id";
+    private final static String ID_COULEUR = "id_couleur";
     private Context context;
 
     public SessionManager(Context context){
@@ -32,12 +33,18 @@ public class SessionManager {
         return prefs.getString(ID, null);
     }
 
-    public void insertUser(String id, String pseudo){
+    public String getIdCouleur(){
+        return prefs.getString(ID_COULEUR, null);
+    }
+
+    public void insertUser(String id, String pseudo, String id_couleur){
         editor.putBoolean(IS_LOGGED, true);
         editor.putString(ID, id);
         editor.putString(PSEUDO, pseudo);
+        editor.putString(ID_COULEUR, id_couleur);
         editor.commit();
     }
+
     public void logout(){
          editor.clear().commit();
     }
