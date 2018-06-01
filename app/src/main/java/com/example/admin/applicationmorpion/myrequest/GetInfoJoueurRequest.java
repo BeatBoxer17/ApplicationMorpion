@@ -32,7 +32,7 @@ public class GetInfoJoueurRequest {
 
     public void getInfoJoueur(final String id, final String idj2, final String idinfo, final getInfoJoueurCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/duel/infojoueur.php";
+        String url = "http://app-morpion.000webhostapp.com/duel/infojoueur.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

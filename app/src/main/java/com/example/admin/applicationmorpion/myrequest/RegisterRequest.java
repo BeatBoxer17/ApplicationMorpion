@@ -28,7 +28,7 @@ public class RegisterRequest{
 
     public void register(final String nom, final String prenom, final String pseudo, final String email, final String password, final String password2, final String id_couleur_fin, final RegisterCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/register/register.php";
+        String url = "http://app-morpion.000webhostapp.com/register/register.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

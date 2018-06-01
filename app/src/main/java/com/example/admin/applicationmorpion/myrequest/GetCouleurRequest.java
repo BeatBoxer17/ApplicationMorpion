@@ -28,7 +28,7 @@ public class GetCouleurRequest {
 
     public void getCouleur(final getCouleurCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/couleur/couleur.php";
+        String url = "http://app-morpion.000webhostapp.com/couleur/couleur.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

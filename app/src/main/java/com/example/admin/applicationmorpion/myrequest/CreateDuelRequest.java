@@ -31,7 +31,7 @@ public class CreateDuelRequest {
 
     public void createDuel(final String id_joueur, final String id_joueur2, final createDuelCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/duel/createduel.php";
+        String url = "http://app-morpion.000webhostapp.com/duel/createduel.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

@@ -31,7 +31,7 @@ public class UpdateScoreRequest {
 
     public void updateScore(final String id_joueur1, final String id_joueur2, final String id_vainqueur, final updateScoreCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/duel/updatescore.php";
+        String url = "http://app-morpion.000webhostapp.com/duel/updatescore.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

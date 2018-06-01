@@ -31,7 +31,7 @@ public class GetJoueurOkRequest {
 
     public void getJoueurok(final Integer id, final getJoueurOkCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/duel/joueurok.php";
+        String url = "http://app-morpion.000webhostapp.com/duel/joueurok.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

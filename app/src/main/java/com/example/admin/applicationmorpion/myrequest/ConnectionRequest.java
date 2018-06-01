@@ -31,7 +31,7 @@ public class ConnectionRequest {
 
     public void connection(final String pseudo, final String password, final LoginCallBack callBack){
 
-        String url = "http://appmorpiontest.000webhostapp.com/login/login.php";
+        String url = "http://app-morpion.000webhostapp.com/login/login.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
