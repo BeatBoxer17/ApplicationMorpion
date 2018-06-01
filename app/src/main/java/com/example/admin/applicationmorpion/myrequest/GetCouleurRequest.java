@@ -37,13 +37,7 @@ public class GetCouleurRequest {
                 try {
 
                     JSONObject json = new JSONObject(response);
-                    Boolean error = Boolean.valueOf(json.getString("error"));
-
-                    if(error){
-                        callBack.onError(json.getString("message"));
-                    } else {
-                        callBack.onSucces(json);
-                    }
+                    callBack.onSucces(json);
 
                 } catch (JSONException e) {
 
@@ -60,7 +54,7 @@ public class GetCouleurRequest {
                 if(error instanceof NetworkError){
                     callBack.onError("Impossible de se connecter");
                 } else if(error instanceof VolleyError){
-                    callBack.onError("Une erreure c'est produite");
+                    callBack.onError("Une erreure c'est produite volley");
                 }
 
             }
