@@ -15,6 +15,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/tv_stat"
+        android:text="@string/stat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:layout_marginTop="10dp"
+        android:id="@+id/sp_joueurs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+    </android.support.v7.widget.AppCompatSpinner>
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_marginTop="10dp"
+        android:id="@+id/btn_stat"
+        android:text="@string/btn_stat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+
     <android.support.v7.widget.AppCompatTextView
         android:layout_marginTop="50dp"
         android:id="@+id/tv_deja_a"

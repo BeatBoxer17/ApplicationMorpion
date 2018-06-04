@@ -14,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.example.admin.applicationmorpion.myrequest.CreateDuelRequest;
 import com.example.admin.applicationmorpion.myrequest.GetJoueurNokRequest;
 import com.example.admin.applicationmorpion.myrequest.GetJoueurOkRequest;
+import com.example.admin.applicationmorpion.myrequest.GetJoueurRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +29,13 @@ public class Menu1Activity extends AppCompatActivity {
     // Déclaration des variable
     private SessionManager sessionManager;
     private TextView textView;
-    private Button btn_logout, btn_duel, btn_nduel, btn_ajout;
+    private Button btn_logout, btn_duel, btn_nduel, btn_ajout, btn_stat; // Nouveau BOUTTON E4
     private RequestQueue queue;
     private CreateDuelRequest createDuelRequest;
     private GetJoueurNokRequest getJoueurNokRequest;
     private GetJoueurOkRequest getJoueurOkRequest;
-    private AppCompatSpinner sp_j_ok, sp_j_nok;
+    private GetJoueurRequest getJoueurRequest;
+    private AppCompatSpinner sp_j_ok, sp_j_nok, sp_js; // Nouveau SPINNER E4
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class Menu1Activity extends AppCompatActivity {
         getJoueurNokRequest = new GetJoueurNokRequest(this, queue);
         getJoueurOkRequest = new GetJoueurOkRequest(this, queue);
         sessionManager = new SessionManager(this);
+        getJoueurRequest = new GetJoueurRequest(this, queue);
 
         // Récuperation des élément du XML
         textView = (TextView) findViewById(R.id.tv_pseudo);
@@ -55,7 +58,71 @@ public class Menu1Activity extends AppCompatActivity {
         btn_nduel = (Button) findViewById(R.id.btn_go_duel_n);
         btn_ajout = (Button) findViewById(R.id.btn_ajout);
 
-        // S'il y a un joueur connecté en sission on recupère son id et on le met dans le texview
+        // ----------------------- E4 ------------------------
+        btn_stat = (Button) findViewById(R.id.btn_stat);
+        sp_js = (AppCompatSpinner) findViewById(R.id.sp_joueurs);
+
+        // ArrayList des pseudo des joueur de la base
+        final List js = new ArrayList();
+        final ArrayAdapter adapterJs = new ArrayAdapter(this, android.R.layout.simple_spinner_item, js);
+        adapterJs.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // ArrayList des id de joueur de la base
+        final List id_js = new ArrayList();
+
+        // Requêtes pour récuperer les joueur deja affrontrer
+        getJoueurRequest.getJoueurok(new GetJoueurRequest.getJoueurCallBack() {
+            @Override
+            // S'il y n'a pas d'erreur
+            public void onSucces(JSONObject json) {
+                try{
+                    // Pour chaque jooueur on met son psuedo dans j_ok et son id dans id_j_ok
+                    for(Iterator iterator = json.keys(); iterator.hasNext();) {
+                        Object cle = iterator.next();
+                        Object val = json.get(String.valueOf(cle));
+                        id_js.add(cle);
+                        js.add(val);
+                        sp_js.setAdapter(adapterJs);
+                    }
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+
+        // Quand on clique sont le bouton pour un duel contre un joueur deja affronté
+        btn_stat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Si la liste n'est pas vide
+                if(!js.isEmpty()){
+                    // Récuperation de la position du spinner
+                    Integer id_js_fin = sp_js.getSelectedItemPosition();
+                    // Récuperation de l'id du joueur en fonction de la position dans le spinner
+                    Object id_js_fin2 = id_js.get(id_js_fin);
+                    // Récupeation du pseudo du joueur en fonction de la position dans le spinner
+                    Object js_fin = js.get(id_js_fin);
+
+                    // On sur l'activité Jeu en envoyant l'id et le pseudo du joueur de la liste
+                    Intent intent = new Intent(getApplicationContext(), StatActivity.class);
+                    intent.putExtra("id", id_js_fin2.toString());
+                    intent.putExtra("pseudo", js_fin.toString());
+                    startActivity(intent);
+                    finish();
+                } else { // Si la liste est vide
+                    Toast.makeText(getApplicationContext(), "Pas de joueur dans la base", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // ---------------------------------------------------
+
+        // S'il y a un joueur connecté en session on recupère son id et on le met dans le texview
         if(sessionManager.isLogged()){
             String pseudo = sessionManager.getPseudo();
             textView.setText(pseudo);

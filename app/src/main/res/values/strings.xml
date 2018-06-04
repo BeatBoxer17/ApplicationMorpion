@@ -20,4 +20,8 @@
     <string name="retour">Retour</string>
     <string name="tv_ajouter">Pas de joueur(s) à affronté(s) ? Inscrit en un autre ici.</string>
     <string name="btn_ajouter">Ajouter</string>
+    <string name="stat">Voir les statistiques de :</string>
+    <string name="btn_stat">voir les statistiques</string>
+    <string name="tv_tduel">Nombre de duel joués :</string>
+    <string name="tv_tduelv">Nombre de duel gagnés :</string>
 </resources>
