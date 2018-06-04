@@ -9,15 +9,15 @@
     <string name="password">Password</string>
     <string name="password2">Retapez votre password</string>
     <string name="register">S\'inscrire</string>
-    <string name="login_title">Connection</string>
-    <string name="login">Connection</string>
-    <string name="logout">Deconnection</string>
+    <string name="login_title">Connexion</string>
+    <string name="login">Connexion</string>
+    <string name="logout">Deconnexion</string>
     <string name="nom">Nom</string>
     <string name="prenom">Prénom</string>
-    <string name="deja_a">Joueur déjà affrontés</string>
-    <string name="pas_deja_a">Joueur pas encore affrontés</string>
+    <string name="deja_a">Joueur(s) déjà affronté(s)</string>
+    <string name="pas_deja_a">Joueur(s) pas encore affronté(s)</string>
     <string name="c_est_partie">C\'est partie !</string>
-    <string name="retour">RETOUR</string>
-    <string name="tv_ajouter">Pas de joueur à affronté ? Inscrit en un autre ici.</string>
+    <string name="retour">Retour</string>
+    <string name="tv_ajouter">Pas de joueur(s) à affronté(s) ? Inscrit en un autre ici.</string>
     <string name="btn_ajouter">Ajouter</string>
 </resources>
